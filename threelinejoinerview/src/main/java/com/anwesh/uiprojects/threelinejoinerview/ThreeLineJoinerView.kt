@@ -11,12 +11,13 @@ import android.content.Context
 import android.graphics.Paint
 import android.graphics.Canvas
 import android.graphics.Color
+import android.util.Log
 
 val colors : Array<Int> = arrayOf(
-        "#bbd123",
+        "#bb3123",
         "#9812CC",
         "#14AB21",
-        "#445AB",
+        "#4452AB",
         "#ddee12"
 ).map {Color.parseColor(it)}.toTypedArray()
 val lines : Int = 3
@@ -36,14 +37,15 @@ fun Canvas.drawMultiJoinerLine(scale : Float, w : Float, h : Float, paint : Pain
     val sf : Float = scale.sinify()
     val sf1 : Float = sf.divideScale(0, lines)
     val gap : Float = w / lines
-    val hGap : Float = h / ((lines + 1) / 2 * hFactor)
+    val hGap : Float = h / (((lines + 1) / 2) * hFactor)
     for (j in 0..(lines - 1)) {
         val i : Int = j.midExpand(lines)
         val yCurr : Float = -hGap * i * sf1
+        Log.d("yCurr:$j", "$yCurr")
         save()
-        translate(gap / 2 + gap * i, h)
+        translate(gap / 2 + gap * j, h)
         drawLine(0f, 0f, 0f, yCurr, paint)
-        if (i != lines - 1) {
+        if (j != lines - 1) {
             val sfj : Float = sf.divideScale(j + 1, lines)
             val iNext : Int = (j + 1).midExpand(lines)
             val y : Float = -hGap * iNext
@@ -83,6 +85,7 @@ class ThreeLineJoinerView(ctx : Context) : View(ctx) {
 
         fun update(cb : (Float) -> Unit) {
             scale += scGap * dir
+            Log.d("scale", "$scale")
             if (Math.abs(scale - prevScale) > 1) {
                 scale = prevScale + dir
                 dir = 0f
@@ -103,6 +106,7 @@ class ThreeLineJoinerView(ctx : Context) : View(ctx) {
 
         fun animate(cb : () -> Unit) {
             if (animated) {
+                cb()
                 try {
                     Thread.sleep(delay)
                     view.invalidate()
