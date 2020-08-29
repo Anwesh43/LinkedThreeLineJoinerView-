@@ -212,4 +212,13 @@ class ThreeLineJoinerView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : ThreeLineJoinerView {
+            val view : ThreeLineJoinerView = ThreeLineJoinerView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
